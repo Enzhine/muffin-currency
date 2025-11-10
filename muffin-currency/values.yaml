@@ -39,7 +39,7 @@ readinessProbe:
   periodSeconds: 5
 
 volumes:
-  - name: app-config
+  - name: config
     configMap:
       name: muffin-currency-cm
       items:
@@ -47,8 +47,8 @@ volumes:
           path: application.json
 
 volumeMounts:
-  - name: app-config
-    mountPath: /app/config
+  - name: config
+    mountPath: /config
     readOnly: true
 
 nodeSelector: {}
