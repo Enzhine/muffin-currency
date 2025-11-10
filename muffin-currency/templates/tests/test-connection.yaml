@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "muffin-currency.fullname" . }}-test-connection"
+  labels:
+    {{- include "muffin-currency.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['{{ include "muffin-currency.fullname" . }}:{{ .Values.service.port }}']
+  restartPolicy: Never
