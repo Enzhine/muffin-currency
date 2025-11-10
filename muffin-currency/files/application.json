@@ -2,15 +2,23 @@
     "rates": {
         "CARAMEL": {
             "CHOCOLATE": 0.85,
-            "PLAIN": 75.50
+            "PLAIN": 75.50,
+            "VANILLA": 12.30
         },
         "CHOCOLATE": {
             "CARAMEL": 1.18,
-            "PLAIN": 89.00
+            "PLAIN": 89.00,
+            "VANILLA": 10.00
         },
         "PLAIN": {
             "CHOCOLATE": 0.013,
-            "CARAMEL": 0.011
+            "CARAMEL": 0.011,
+            "VANILLA": 0.02
+        },
+        "VANILLA": {
+            "CHOCOLATE": 100.00,
+            "PLAIN": 200.50,
+            "CARAMEL": 55.00
         }
     },
     "port": "8080"
