@@ -9,4 +9,4 @@ Extended application with json configuration.
 Application code is located at `app` folder.
 
 Application Helm chart is located at `muffin-currency` folder.
-Use `helm install muffin-currency ./muffin-currency` at the repository folder to deloy application.
+Use `helm install muffin-currency ./muffin-currency` at the repository folder to deploy the application.
