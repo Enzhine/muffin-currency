@@ -1,0 +1,13 @@
+{{- if .Values.configMap.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.configMap.name }}
+  labels:
+    {{- include "muffin-currency.labels" . | nindent 4 }}
+data:
+  {{- range .Values.configMap.files }}
+  {{ . }}: |-
+    {{- $.Files.Get (printf "files/%s" .) | nindent 4 }}
+  {{- end }}
+{{- end }}

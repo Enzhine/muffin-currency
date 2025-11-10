@@ -13,49 +13,41 @@ type Config struct {
 	Port  string
 }
 
-func parseJsonFile(filename string) (parsed map[string]interface{}) {
-	file, err := os.ReadFile(filename)
-	if err != nil {
-		return
+func defaultConfig() Config {
+	return Config{
+		Rates: map[string]map[string]float64{
+			"CARAMEL":   {"CHOKOLATE": 0.85, "PLAIN": 75.50},
+			"CHOKOLATE": {"CARAMEL": 1.18, "PLAIN": 89.00},
+			"PLAIN":     {"CHOKOLATE": 0.013, "CARAMEL": 0.011},
+		},
+		Port: "8080",
 	}
+}
 
-	err = json.Unmarshal(file, &parsed)
-	if err != nil {
-		panic(err)
-	}
+func parseJsonFile(filename string) (parsed map[string]interface{}) {
 
 	return
 }
 
-func getConfig() (cfg Config) {
-	json := parseJsonFile("application.json")
+func populateConfig(cfg *Config, path string) error {
+	file, err := os.ReadFile(path)
+	if err != nil {
+		return err
+	}
+
+	var parsedConfig Config
+	err = json.Unmarshal(file, &parsedConfig)
+	if err != nil {
+		return err
+	}
 
 	// Config low priority
 
-	if rates, has := json["rates"]; has {
-		if value, has := rates.(map[string]map[string]float64); has {
-			cfg.Rates = value
-		} else {
-			panic("Config 'rates' key must contain 'map[string]map[string]float64' value")
-		}
-	} else {
-		// default value
-		cfg.Rates = map[string]map[string]float64{
-			"CARAMEL":   {"CHOKOLATE": 0.85, "PLAIN": 75.50},
-			"CHOKOLATE": {"CARAMEL": 1.18, "PLAIN": 89.00},
-			"PLAIN":     {"CHOKOLATE": 0.013, "CARAMEL": 0.011},
-		}
+	if parsedConfig.Port != "" {
+		cfg.Port = parsedConfig.Port
 	}
-
-	if port, has := json["port"]; has {
-		if value, has := port.(string); has {
-			cfg.Port = value
-		} else {
-			panic("Config 'port' key must contain 'string' value")
-		}
-	} else {
-		// default value
-		cfg.Port = "8080"
+	if len(parsedConfig.Rates) > 0 {
+		cfg.Rates = parsedConfig.Rates
 	}
 
 	// Envs high priority
@@ -64,7 +56,7 @@ func getConfig() (cfg Config) {
 		cfg.Port = port_env
 	}
 
-	return
+	return nil
 }
 
 type CurrencyRate struct {
@@ -104,7 +96,13 @@ func getRateHandler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	// Init global config values
-	config = getConfig()
+	config := defaultConfig()
+	for _, path := range []string{"application.json", "config/application.json"} {
+		err := populateConfig(&config, path)
+		if err == nil {
+			log.Printf("Applied '%s' config", path)
+		}
+	}
 
 	// REST route handlers
 	http.HandleFunc("/rate", getRateHandler)
