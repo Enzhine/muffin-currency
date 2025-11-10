@@ -5,9 +5,7 @@ metadata:
   labels:
     {{- include "muffin-currency.labels" . | nindent 4 }}
 spec:
-  {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
-  {{- end }}
   selector:
     matchLabels:
       {{- include "muffin-currency.selectorLabels" . | nindent 6 }}
