@@ -24,11 +24,6 @@ func defaultConfig() Config {
 	}
 }
 
-func parseJsonFile(filename string) (parsed map[string]interface{}) {
-
-	return
-}
-
 func populateConfig(cfg *Config, path string) error {
 	file, err := os.ReadFile(path)
 	if err != nil {
@@ -41,8 +36,6 @@ func populateConfig(cfg *Config, path string) error {
 		return err
 	}
 
-	// Config low priority
-
 	if parsedConfig.Port != "" {
 		cfg.Port = parsedConfig.Port
 	}
@@ -50,13 +43,13 @@ func populateConfig(cfg *Config, path string) error {
 		cfg.Rates = parsedConfig.Rates
 	}
 
-	// Envs high priority
+	return nil
+}
 
+func populateConfigByEnvs(cfg *Config) {
 	if port_env, has := os.LookupEnv("PORT"); has {
 		cfg.Port = port_env
 	}
-
-	return nil
 }
 
 type CurrencyRate struct {
@@ -96,13 +89,14 @@ func getRateHandler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	// Init global config values
-	config := defaultConfig()
+	config = defaultConfig()
 	for _, path := range []string{"application.json", "config/application.json"} {
 		err := populateConfig(&config, path)
 		if err == nil {
 			log.Printf("Applied '%s' config", path)
 		}
 	}
+	populateConfigByEnvs(&config)
 
 	// REST route handlers
 	http.HandleFunc("/rate", getRateHandler)
