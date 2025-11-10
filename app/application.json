@@ -1,0 +1,17 @@
+{
+    "rates": {
+        "CARAMEL": {
+            "CHOKOLATE": 0.85,
+            "PLAIN": 75.50
+        },
+        "CHOKOLATE": {
+            "CARAMEL": 1.18,
+            "PLAIN": 89.00
+        },
+        "PLAIN": {
+            "CHOKOLATE": 0.013,
+            "CARAMEL": 0.011
+        }
+    },
+    "port": "8080"
+}
