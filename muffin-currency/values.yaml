@@ -41,7 +41,7 @@ readinessProbe:
 volumes:
   - name: app-config
     configMap:
-      name: muffin-wallet-cm
+      name: muffin-currency-cm
       items:
         - key: application.json
           path: application.json
@@ -59,6 +59,6 @@ affinity: {}
 
 configMap:
   enabled: true
-  name: muffin-wallet-cm
+  name: muffin-currency-cm
   files:
     - "application.json"
